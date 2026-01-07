@@ -12,7 +12,7 @@ export default function HomePage() {
   const [sensitivity, setSensitivity] = useState(50);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
       <h1 className="text-3xl font-bold text-center mb-8">
         Circular Audio Equalizer
       </h1>

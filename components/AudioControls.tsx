@@ -177,18 +177,19 @@ export default function AudioControls({ initialize, stop, isInitialized, sensiti
       {/* Stream Controls */}
       <div className="space-y-3">
         <label className="text-sm text-gray-400">Streaming endpoint</label>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             value={wsUrl}
             onChange={(e) => setWsUrl(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-lg bg-gray-900 text-white border border-gray-700"
+            className="flex-1 px-3 py-3 sm:py-2 rounded-lg bg-gray-900 text-white border border-gray-700"
+            placeholder="ws://..."
           />
           <button
             onClick={handleStreamToggle}
-            className={`px-4 py-2 rounded-lg font-medium ${isStreaming ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-600 hover:bg-emerald-700'
+            className={`px-4 py-3 sm:py-2 rounded-lg font-medium w-full sm:w-auto ${isStreaming ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-600 hover:bg-emerald-700'
               }`}
           >
-            {isStreaming ? 'Stop Streaming' : 'Start Streaming'}
+            {isStreaming ? 'Stop' : 'Start'}
           </button>
         </div>
       </div>

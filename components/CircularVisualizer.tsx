@@ -62,7 +62,26 @@ export default function CircularVisualizer({
   startPolling: (cb: (data: any) => void, options?: any) => () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
+  const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
+
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const { width } = containerRef.current.getBoundingClientRect();
+        // Maintain square aspect ratio or just use container width
+        // High DPI support could be added here by multiplying by window.devicePixelRatio
+        setDimensions({ width, height: width });
+      }
+    };
+
+    // Initial size
+    updateSize();
+
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
   // Removed local useAudioContext call to avoid state isolation
 
   const [isSilent, setIsSilent] = useState(false);
@@ -154,27 +173,29 @@ export default function CircularVisualizer({
 
   return (
     <animated.div style={{ scale }} className="relative">
-      <canvas
-        ref={canvasRef}
-        width={400}
-        height={400}
-        className="rounded-full border-2 border-gray-700/50 shadow-2xl"
-      />
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-center">
-          <div className={`text-2xl font-bold mb-2 ${isInitialized ? 'text-cyan-300' : 'text-gray-500'}`}>
-            {isInitialized ? 'Live Audio' : 'Equalizer Standby'}
+      <div ref={containerRef} className="w-full max-w-[400px] aspect-square relative mx-auto">
+        <canvas
+          ref={canvasRef}
+          width={dimensions.width}
+          height={dimensions.height}
+          className="w-full h-full rounded-full border-2 border-gray-700/50 shadow-2xl"
+        />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+            <div className={`text-2xl font-bold mb-2 ${isInitialized ? 'text-cyan-300' : 'text-gray-500'}`}>
+              {isInitialized ? 'Live Audio' : 'Equalizer'}
+            </div>
+            <div className="text-gray-400 text-sm">
+              {bands} bands
+            </div>
+            {isInitialized ? (
+              isSilent ? (
+                <div className="text-sm text-gray-500 italic mt-2">No audio detected</div>
+              ) : null
+            ) : (
+              <div className="text-sm text-red-400 italic mt-2">Standby</div>
+            )}
           </div>
-          <div className="text-gray-400 text-sm">
-            {bands} frequency bands
-          </div>
-          {isInitialized ? (
-            isSilent ? (
-              <div className="text-sm text-gray-500 italic mt-2">No audio detected</div>
-            ) : null
-          ) : (
-            <div className="text-sm text-red-400 italic mt-2">No microphone connected</div>
-          )}
         </div>
       </div>
     </animated.div>
