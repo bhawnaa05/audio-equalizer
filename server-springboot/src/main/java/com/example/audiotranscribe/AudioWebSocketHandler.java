@@ -19,7 +19,6 @@ public class AudioWebSocketHandler extends BinaryWebSocketHandler {
     private final ObjectMapper mapper = new ObjectMapper();
     private final WebClient webClient;
     private final String geminiApiUrl;
-    private final String apiKey;
 
     // Store audio buffers per session
     private final Map<String, java.io.ByteArrayOutputStream> audioBuffers = new java.util.concurrent.ConcurrentHashMap<>();
@@ -37,7 +36,6 @@ public class AudioWebSocketHandler extends BinaryWebSocketHandler {
             @org.springframework.beans.factory.annotation.Value("${gemini.location}") String location,
             @org.springframework.beans.factory.annotation.Value("${gemini.api-key}") String apiKey) {
         this.webClient = webClientBuilder.build();
-        this.apiKey = apiKey;
         // Using Gemini 1.5 Flash for speed
         this.geminiApiUrl = String.format(
                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=%s",
